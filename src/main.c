@@ -10,11 +10,11 @@
 //  ======== globals ============================================
 struct payload_serial {
 		char *id_test;
-		char *time;
-		uint32_t rand_val;
+		uint16_t rand_val;
 };
 
-static const struct gpio_dt_spec led_tx = GPIO_DT_SPEC_GET(LED_TX, gpios);
+static const struct gpio_dt_spec led_tx = GPIO_DT_SPEC_GET(LED_TX, gpios);	// alias ledtx on devicetree
+																			// test on customed lora_e5_mini board
 
 //  ======== main ===============================================
 int8_t main(void)
@@ -24,13 +24,11 @@ int8_t main(void)
 	int8_t itr = 0;
 
 	char dev_eui[] = "0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x06, 0x21, 0xA5";
-	char date_time[] = "23/02/13,16:31:07-20";
 
 	// data to be transmitted
 	struct payload_serial test_tx;
 	test_tx.id_test = dev_eui;
-	test_tx.time = date_time;
-	test_tx.rand_val = sys_rand32_get();	// random value simulating ADC value in int32 format
+	test_tx.rand_val = sys_rand16_get();	// random value simulating ADC value in uint16 format
 
 	printk("LoRa Transmitter Example\nBoard: %s\n", CONFIG_BOARD);
 	
@@ -54,11 +52,10 @@ int8_t main(void)
 			return 0;
 		}
 
-	// transmission of 5 packets on lora phy layer
-	for (itr = 0; itr < 5; itr++) {
-		printk("iteration: %d\n", itr);
+	// transmission of packets on lora phy layer forever
+	while (1) {
+
 		ret = lora_send(lora_dev, &test_tx, sizeof(test_tx));
-		
 		if (ret < 0) {
 			printk("LoRa send failed. error%d\n", ret);
 			return 0;
@@ -68,10 +65,11 @@ int8_t main(void)
 			if (ret < 0) {
 				return 0;
 			}
+			
 			// printing of data and size of packets
 			printk("XMIT %d bytes: \n", sizeof(test_tx));
 			for (uint16_t i = 0; i < sizeof(test_tx); i++) {
-				printk("id: %s, time: %s, value: %u\n", test_tx.id_test, test_tx.time, test_tx.rand_val);
+				printk("id: %s, value: %u\n", test_tx.id_test, test_tx.rand_val);
 			}
 			printk("\n");
 		}
