@@ -73,7 +73,7 @@ int8_t main(void)
 			}
 			printk("\n");
 		}
-		k_sleep(K_MSEC(1000));	// waiting 1s
+		k_sleep(K_MSEC(100));	// waiting 100ms - better to see spectrum with plutoSDR/GRC
 	}
 	return 0;
 }
