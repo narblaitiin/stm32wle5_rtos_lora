@@ -12,6 +12,6 @@ The following commands clean build folder, build and flash the sample:
 
 **Command to use**
 
-west build -p always -b stm32wl_dw1000_iot_board applications/stm32wle5_rtos_lora
+west build -p always -b lora_e5_mini applications/stm32wle5_rtos_lora
 
 west flash --runner pyocd
