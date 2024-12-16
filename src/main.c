@@ -23,13 +23,9 @@ int8_t main(void)
 	int8_t ret;
 	int8_t itr = 0;
 
-	char dev_eui[] = "0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x06, 0x21, 0xA5";
-
-	// data to be transmitted
 	struct payload_serial test_tx;
-	test_tx.id_test = dev_eui;
-	test_tx.rand_val = sys_rand16_get();	// random value simulating ADC value in uint16 format
-
+	char dev_eui[] = "0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x06, 0x21, 0xA5";	// first node for next LoRaWAn application
+	
 	printk("LoRa Transmitter Example\nBoard: %s\n", CONFIG_BOARD);
 	
 	// setup lora radio device
@@ -54,6 +50,9 @@ int8_t main(void)
 
 	// transmission of packets on lora phy layer forever
 	while (1) {
+		// data to be transmitted
+		test_tx.id_test = dev_eui;
+		test_tx.rand_val = sys_rand16_get();	// random value simulating ADC value in uint16 format
 
 		ret = lora_send(lora_dev, &test_tx, sizeof(test_tx));
 		if (ret < 0) {
@@ -73,7 +72,7 @@ int8_t main(void)
 			}
 			printk("\n");
 		}
-		k_sleep(K_MSEC(100));	// waiting 100ms - better to see spectrum with plutoSDR/GRC
+		k_sleep(K_MSEC(1000));	// like zephyr lora driver sample
 	}
 	return 0;
 }
